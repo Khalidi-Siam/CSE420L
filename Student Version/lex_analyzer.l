@@ -19,17 +19,17 @@ int lines = 1;
 delim	 [ \t\v\r]
 
 /* write regular expressions for whitespace and newline */
-ws [ \t]		 
+ws     {delim}+		 
 
-newline	 [\n]  
+newline  [\n]  
 
 letter_	 [A-Za-z_]
 digit	 [0-9]
 
 /* write regular expressions for id, float and integers */
-id [a-zA-Z_][a-zA-Z0-9_]*
-int [+-]?[0-9]+  //according to the manual,  + or - will not be the part of an integer.
-float [+-]?([0-9]*[.][0-9]+|[0-9]+[.][0-9]*)
+id {letter_}({letter_}|{digit})*
+int {digit}+  //according to the manual,  + or - will not be the part of an integer.
+float {digit}*(\.{digit}+)|{digit}*(\.{digit}+)?((E|e)[-]?{digit}+)
 
 
 

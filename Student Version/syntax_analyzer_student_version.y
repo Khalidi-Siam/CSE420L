@@ -19,7 +19,9 @@ int lines;
 
 %}
 
-%token IF ELSE FOR
+%token IF ELSE FOR WHILE DO BREAK INT CHAR FLOAT DOUBLE VOID RETURN SWITCH CASE DEFAULT CONTINUE GOTO PRINTF ADDOP MULOP INCOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA COLON SEMICOLON ID CONST_INT CONST_FLOAT
+
+%nonassoc  RELOP
 
 %%
 
@@ -38,9 +40,52 @@ program : program unit
 	}
 	| unit
 	{
-
+		outlog<<"At line no: "<<lines<<" program : unit "<<endl<<endl;
+		outlog<<$1->getname()<<endl<<endl;
+		
+		$$ = new symbol_info($1->getname(),"program");
 	}
 	;
+
+
+unit : var_declaration
+	{
+		outlog<<"At line no: "<<lines<<" unit : var_declaration "<<endl<<endl;
+		outlog<<$1->getname()<<endl<<endl;
+		
+		$$ = new symbol_info($1->getname(),"unit");
+	}
+	| func_definition
+	{
+		outlog<<"At line no: "<<lines<<" unit : func_definition "<<endl<<endl;
+		outlog<<$1->getname()<<endl<<endl;
+		
+		$$ = new symbol_info($1->getname(),"unit");
+	}
+	;
+
+func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+	{
+		outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement "<<endl<<endl;
+		outlog<<$1->getname()+" "+$2->getname()+"("+$4->getname()+")\n"+$6->getname()<<endl<<endl;
+		
+		$$ = new symbol_info($1->getname()+" "+$2->getname()+"("+$4->getname()+")\n"+$6->getname(),"func_def");
+	}
+	| type_specifier ID LPAREN RPAREN compound_statement
+	{
+		outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN RPAREN compound_statement "<<endl<<endl;
+		outlog<<$1->getname()+" "+$2->getname()+"()\n"+$5->getname()<<endl<<endl;
+		
+		$$ = new symbol_info($1->getname()+" "+$2->getname()+"()\n"+$5->getname(),"func_def");
+	}
+	;
+
+
+
+
+
+	
+
 type_specifier : INT {
 					outlog << "At line no: " << lines << "type_specifier : INT" <<endl<<endl;
 					outlog << "int" <<endl<<endl;
@@ -50,19 +95,6 @@ type_specifier : INT {
 				| VOID {}
 				;
 
-func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
-		{	
-
-		}
-		| type_specifier ID LPAREN RPAREN compound_statement
-		{
-			
-			outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN RPAREN compound_statement "<<endl<<endl;
-			outlog<<$1->getname()<<" "<<$2->getname()<<"()\n"<<$5->getname()<<endl<<endl;
-			
-			$$ = new symbol_info($1->getname()+" "+$2->getname()+"()\n"+$5->getname(),"func_def");	
-		}
- 		;
 
 statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	  {

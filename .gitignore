@@ -1,0 +1,7 @@
+a.exe
+*.o
+lex.yy.c
+y.output
+y.tab.c
+y.tab.h
+two_pass_compiler.exe
